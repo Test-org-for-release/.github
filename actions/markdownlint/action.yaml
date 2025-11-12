@@ -1,0 +1,8 @@
+name: 'Markdownlint'
+description: 'Run Markdown linter'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run Markdownlint
+      uses: actionshub/markdownlint@main
