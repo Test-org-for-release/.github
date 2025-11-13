@@ -29,5 +29,6 @@ runs:
       run: |
         echo "Linting changed Markdown files:"
         echo "${{ steps.changed.outputs.files }}"
+        echo "Action path: ${{ github.action_path }}"
 
         markdownlint-cli2 ${{ steps.changed.outputs.files }} "${{ github.action_path }}/.markdownlint.json"
