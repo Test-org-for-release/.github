@@ -6,7 +6,7 @@ runs:
   steps:
     - name: Install Markdownlint
       shell: bash
-      run: gem install mdl
+      run: gem install --user-install mdl
 
     - name: Determine changed Markdown files
       id: changed
