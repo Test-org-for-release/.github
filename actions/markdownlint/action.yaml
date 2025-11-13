@@ -6,3 +6,4 @@ runs:
   steps:
     - name: Run Markdownlint
       uses: actionshub/markdownlint@main
+      working-directory: .
