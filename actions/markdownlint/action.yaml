@@ -4,9 +4,9 @@ description: 'Run Markdown linter with shared configuration'
 runs:
   using: 'composite'
   steps:
-    - name: Install Markdownlint
+    - name: Install markdownlint-cli2
       shell: bash
-      run: gem install --user-install mdl
+      run: npm install -g markdownlint-cli2
 
     - name: Determine changed Markdown files
       id: changed
@@ -23,15 +23,16 @@ runs:
         fi
         echo "files=$FILES" >> $GITHUB_OUTPUT
 
-    - name: Run Markdownlint (if changed files exist)
+    - name: Run markdownlint and annotate results
+      if: ${{ steps.changed.outputs.files != '' }}
       shell: bash
       run: |
-        if [ -z "${{ steps.changed.outputs.files }}" ]; then
-          echo "✅ No Markdown files changed."
-          exit 0
-        fi
-
         echo "Linting changed Markdown files:"
         echo "${{ steps.changed.outputs.files }}"
 
-        mdl ${{ steps.changed.outputs.files }} "${{ github.action_path }}/.mdlrc"
+        # Use GitHub problem matcher for markdownlint-cli2
+        echo "::add-matcher::${{ github.action_path }}/markdownlint-matcher.json"
+
+        markdownlint-cli2 ${{ steps.changed.outputs.files }} "${{ github.action_path }}/.markdownlint.json"
+
+        echo "::remove-matcher owner=markdownlint::"
