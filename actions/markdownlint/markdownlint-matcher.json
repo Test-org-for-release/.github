@@ -4,11 +4,12 @@
       "owner": "markdownlint",
       "pattern": [
         {
-          "regexp": "^(.*):(\\d+):(\\d+)\\s(.*)$",
+          "regexp": "^([^:]+):(\\d+)(?::(\\d+))?\\s+(MD\\d+)\\s+(.*)$",
           "file": 1,
           "line": 2,
           "column": 3,
-          "message": 4
+          "code": 4,
+          "message": 5
         }
       ]
     }
