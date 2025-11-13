@@ -33,6 +33,6 @@ runs:
         # Use GitHub problem matcher for markdownlint-cli2
         echo "::add-matcher::${{ github.action_path }}/markdownlint-matcher.json"
 
-        markdownlint-cli2 ${{ steps.changed.outputs.files }} "${{ github.action_path }}/.markdownlint.json" || true
+        markdownlint-cli2 ${{ steps.changed.outputs.files }} "${{ github.action_path }}/.markdownlint.json"
 
         echo "::remove-matcher owner=markdownlint::"
