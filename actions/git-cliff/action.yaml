@@ -38,4 +38,4 @@ runs:
         # Create a git tag
         git tag v"$VERSION"
         # Push to specified branch selected in UI
-        git push --atomic origin "$REF" v"$VERSION"
+        git push --atomic origin "$REF_NAME" v"$VERSION"
