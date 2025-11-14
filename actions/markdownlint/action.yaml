@@ -28,8 +28,9 @@ runs:
       shell: bash
       run: |
         MDL_CONFIG_PATH="${{ github.action_path }}/.markdownlint.json"
-        echo "Using Markdownlint config at: $MDL_CONFIG_PATH"
-        cat "$MDL_CONFIG_PATH"
+        # Check the config path and print the config if needed
+        # echo "Using Markdownlint config at: $MDL_CONFIG_PATH"
+        # cat "$MDL_CONFIG_PATH"
 
         echo "Linting changed Markdown files:"
         echo "${{ steps.changed.outputs.files }}"
