@@ -1,0 +1,62 @@
+name: 'Publish-GHCR'
+description: 'Create and publish image to GHCR'
+
+inputs:
+  registry:
+    description: ...
+    required: true
+  image_name:
+    description: ...
+    required: true
+  image_tag:
+    description: ...
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    # Uses the `docker/login-action` action to log in to the Container registry.
+    - name: Log in to the Container registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ inputs.registry }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    #
+    - name: Extract metadata (tags, labels) for Docker (tag-variant)
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+      id: meta_tag
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ inputs.registry }}/${{ inputs.image_name }}
+        tags: |
+          type=ref,event=tag
+    #
+    - name: Extract metadata (tags, labels) for Docker (manual trigger variant)
+      if: github.event_name == 'workflow_dispatch'
+      id: meta_input
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ inputs.registry }}/${{ inputs.image_name }}
+        tags: |
+          type=raw,value=${{ inputs.image_tag }}
+
+    # build the image; if the build succeeds, it pushes the image to GitHub Packages,
+    # using the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
+    - name: Build and push docker image
+      id: push
+      uses: docker/build-push-action@v6
+      with:
+        context: docker
+        push: true
+        tags: ${{ steps.meta_tag.outputs.tags || steps.meta_input.outputs.tags }}
+        labels: ${{ steps.meta_tag.outputs.labels || steps.meta_input.outputs.labels }}
+
+    # This step generates an artifact attestation for the image.
+    - name: Generate artifact attestation
+      uses: actions/attest-build-provenance@v3
+      with:
+        subject-name: ${{ inputs.registry }}/${{ inputs.image_name }}
+        subject-digest: ${{ steps.push.outputs.digest }}
+        push-to-registry: true
