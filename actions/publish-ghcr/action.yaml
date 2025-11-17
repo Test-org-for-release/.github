@@ -15,14 +15,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    # Uses the `docker/login-action` action to log in to the Container registry.
-    - name: Log in to the Container registry
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ inputs.registry }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
     #
     - name: Extract metadata (tags, labels) for Docker (tag-variant)
       if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
