@@ -29,7 +29,9 @@ runs:
         echo "files=$FILES" >> "$GITHUB_OUTPUT"
 
     - name: Run markdownlint
-      if: ${{ steps.changed.outputs.files != '' }}
+      if: |
+        ${{ steps.changed.outputs.files != '' }} ||
+        ${{ steps.changed.outputs.files != ' ' }}
       shell: bash
       run: |
         MDL_CONFIG_PATH="${{ github.action_path }}/.markdownlint.json"
