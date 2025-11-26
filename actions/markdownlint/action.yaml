@@ -31,16 +31,22 @@ runs:
         FILES="${{ steps.changed.outputs.files }}"
 
         if [ -z "$FILES" ]; then
-          echo "No Markdown files found. Skipping installation and linting."
+          echo "No Markdown files found. Skipping installation."
           exit 0
         fi
 
         npm install -g markdownlint-cli2
 
     - name: Run markdownlint
+      if: ${{ steps.changed.outputs.files != '' }}
       shell: bash
       run: |
         FILES="${{ steps.changed.outputs.files }}"
+
+        if [ -z "$FILES" ]; then
+          echo "No Markdown files found. Skipping linting."
+          exit 0
+        fi
 
         MDL_CONFIG_PATH="${{ github.action_path }}/.markdownlint.json"
         # Check the config path and print the config if needed
